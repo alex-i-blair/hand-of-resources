@@ -48,4 +48,22 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual(pizza);
     //Ben told me that this was an acceptable test method but it seems like its logic has potential to return false positives
   });
+
+  it('should be able to update a pizza by id', async () => {
+    const pizza = await Pizza.insert({
+      style: 'Neapolitan',
+      toppings: 'Margarita',
+    });
+    const res = await request(app)
+      .patch(`/api/vi/pizzas/${pizza.id}`)
+      .send({ style: 'Detroit', toppings: 'Pepperoni' });
+
+    const expected = {
+      id: expect.any(String),
+      style: 'Detroit',
+      toppings: 'Pepperoni',
+    };
+    expect(res.body).toEqual(expected);
+    expect(await Pizza.getById(pizza.id)).toEqual(expected);
+  });
 });
