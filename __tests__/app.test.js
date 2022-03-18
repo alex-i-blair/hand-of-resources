@@ -69,4 +69,15 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual(expected);
     expect(await Pizza.getById(pizza.id)).toEqual(expected);
   });
+
+  it('should be able to delete a pizza by id', async () => {
+    const pizza = await Pizza.insert({
+      style: 'Neapolitan',
+      toppings: 'Margarita',
+    });
+    const res = await request(app).delete(`/api/v1/pizzas/${pizza.id}`);
+
+    expect(res.body).toEqual(pizza);
+    expect(await Pizza.getById(pizza.id)).toBeNull();
+  });
 });
