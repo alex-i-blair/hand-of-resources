@@ -3,7 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const Pizza = require('../lib/models/Pizza');
-// const Pizza = require('../lib/models/Pizza');
+const Tree = require('../lib/models/Tree');
 
 describe('hand-of-resources routes', () => {
   beforeEach(() => {
@@ -13,7 +13,9 @@ describe('hand-of-resources routes', () => {
   afterAll(() => {
     pool.end();
   });
-
+  //=================================================================
+  //Pizza data tests
+  //=================================================================
   it('should be able to create a pizza', async () => {
     const res = await request(app)
       .post('/api/v1/pizzas')
@@ -23,18 +25,6 @@ describe('hand-of-resources routes', () => {
       id: expect.any(String),
       style: 'Neapolitan',
       toppings: 'Margarita',
-    });
-  });
-
-  it('should be able to create a tree', async () => {
-    const res = await request(app)
-      .post('/api/v1/trees')
-      .send({ name: 'Black Mable', type: 'Deciduous' });
-
-    expect(res.body).toEqual({
-      id: expect.any(String),
-      name: 'Black Mable',
-      type: 'Deciduous',
     });
   });
 
@@ -91,5 +81,28 @@ describe('hand-of-resources routes', () => {
 
     expect(res.body).toEqual(pizza);
     expect(await Pizza.getById(pizza.id)).toBeNull();
+  });
+
+  //=================================================================
+  //Tree data tests
+  //=================================================================
+  it('should be able to create a tree', async () => {
+    const res = await request(app)
+      .post('/api/v1/trees')
+      .send({ name: 'Black Mable', type: 'Deciduous' });
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Black Mable',
+      type: 'Deciduous',
+    });
+  });
+
+  it('should be able to get all trees', async () => {
+    await Tree.insert({ name: 'Black Mable', type: 'Deciduous' });
+    const res = await request(app).get('/api/v1/trees');
+    expect(res.body).toEqual([
+      { id: expect.any(String), name: 'Black Mable', type: 'Deciduous' },
+    ]);
   });
 });
