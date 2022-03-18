@@ -54,12 +54,15 @@ describe('hand-of-resources routes', () => {
       style: 'Neapolitan',
       toppings: 'Margarita',
     });
+    console.log('initial pizza ||', pizza);
     const res = await request(app)
-      .patch(`/api/vi/pizzas/${pizza.id}`)
+      .patch(`/api/v1/pizzas/${pizza.id}`)
       .send({ style: 'Detroit', toppings: 'Pepperoni' });
 
+    const newPizza = await Pizza.getById(pizza.id);
+    console.log('new pizza ||', newPizza);
     const expected = {
-      id: expect.any(String),
+      id: pizza.id,
       style: 'Detroit',
       toppings: 'Pepperoni',
     };
