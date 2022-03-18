@@ -26,6 +26,18 @@ describe('hand-of-resources routes', () => {
     });
   });
 
+  it('should be able to create a tree', async () => {
+    const res = await request(app)
+      .post('/api/v1/trees')
+      .send({ name: 'Black Mable', type: 'Deciduous' });
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Black Mable',
+      type: 'Deciduous',
+    });
+  });
+
   it('should be able to get pizzas', async () => {
     await Pizza.insert({ style: 'Neapolitan', toppings: 'Margarita' });
     const res = await request(app).get('/api/v1/pizzas');
