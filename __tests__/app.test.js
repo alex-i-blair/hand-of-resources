@@ -37,4 +37,15 @@ describe('hand-of-resources routes', () => {
       },
     ]);
   });
+
+  it('should be able to get a pizza by id', async () => {
+    const pizza = await Pizza.insert({
+      style: 'Neapolitan',
+      toppings: 'Margarita',
+    });
+
+    const res = await request(app).get(`/api/v1/pizzas/${pizza.id}`);
+    expect(res.body).toEqual(pizza);
+    //Ben told me that this was an acceptable test method but it seems like its logic has potential to return false positives
+  });
 });
