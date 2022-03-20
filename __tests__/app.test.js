@@ -28,7 +28,7 @@ describe('hand-of-resources routes', () => {
     });
   });
 
-  it('should be able to get pizzas', async () => {
+  it('should be able to get all pizzas', async () => {
     await Pizza.insert({ style: 'Neapolitan', toppings: 'Margarita' });
     const res = await request(app).get('/api/v1/pizzas');
     expect(res.body).toEqual([
@@ -56,13 +56,10 @@ describe('hand-of-resources routes', () => {
       style: 'Neapolitan',
       toppings: 'Margarita',
     });
-    console.log('initial pizza ||', pizza);
     const res = await request(app)
       .patch(`/api/v1/pizzas/${pizza.id}`)
       .send({ style: 'Detroit', toppings: 'Pepperoni' });
 
-    const newPizza = await Pizza.getById(pizza.id);
-    console.log('new pizza ||', newPizza);
     const expected = {
       id: pizza.id,
       style: 'Detroit',
@@ -104,5 +101,16 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual([
       { id: expect.any(String), name: 'Black Mable', type: 'Deciduous' },
     ]);
+  });
+
+  it('should be able to get a tree by id', async () => {
+    const tree = await Tree.insert({ name: 'Black Mable', type: 'Deciduous' });
+    const res = await request(app).get(`/api/v1/trees/${tree.id}`);
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Black Mable',
+      type: 'Deciduous',
+    });
+    expect(res);
   });
 });
