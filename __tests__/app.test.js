@@ -111,7 +111,6 @@ describe('hand-of-resources routes', () => {
       name: 'Black Maple',
       type: 'Deciduous',
     });
-    expect(res);
   });
 
   it('should be able to update a tree by id', async () => {
@@ -153,5 +152,15 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual([
       { id: expect.any(String), name: 'Toby', breed: 'Corgidor' },
     ]);
+  });
+
+  it('should be able to get a dog by id', async () => {
+    const dog = await Dog.insert({ name: 'Toby', breed: 'Corgidor' });
+    const res = await request(app).get(`/api/v1/dogs/${dog.id}`);
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Toby',
+      breed: 'Corgidor',
+    });
   });
 });
