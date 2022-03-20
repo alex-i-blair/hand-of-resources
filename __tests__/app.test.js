@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const Pizza = require('../lib/models/Pizza');
 const Tree = require('../lib/models/Tree');
+const Dog = require('../lib/models/Dog');
 
 describe('hand-of-resources routes', () => {
   beforeEach(() => {
@@ -145,5 +146,12 @@ describe('hand-of-resources routes', () => {
       name: 'Toby',
       breed: 'Corgidor',
     });
+  });
+  it('should be able to get all dogs', async () => {
+    await Dog.insert({ name: 'Toby', breed: 'Corgidor' });
+    const res = await request(app).get('/api/v1/dogs');
+    expect(res.body).toEqual([
+      { id: expect.any(String), name: 'Toby', breed: 'Corgidor' },
+    ]);
   });
 });
