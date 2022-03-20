@@ -79,7 +79,6 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual(pizza);
     expect(await Pizza.getById(pizza.id)).toBeNull();
   });
-
   //=================================================================
   //Tree data tests
   //=================================================================
@@ -133,5 +132,18 @@ describe('hand-of-resources routes', () => {
     const res = await request(app).delete(`/api/v1/trees/${tree.id}`);
     expect(res.body).toEqual(tree);
     expect(await Tree.getById(tree.id)).toBeNull();
+  });
+  //=================================================================
+  //Dog data tests
+  //=================================================================
+  it('should be able to make a dog', async () => {
+    const res = await request(app)
+      .post('/api/v1/dogs')
+      .send({ name: 'Toby', breed: 'Corgidor' });
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Toby',
+      breed: 'Corgidor',
+    });
   });
 });
