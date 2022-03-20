@@ -86,31 +86,45 @@ describe('hand-of-resources routes', () => {
   it('should be able to create a tree', async () => {
     const res = await request(app)
       .post('/api/v1/trees')
-      .send({ name: 'Black Mable', type: 'Deciduous' });
+      .send({ name: 'Black Maple', type: 'Deciduous' });
 
     expect(res.body).toEqual({
       id: expect.any(String),
-      name: 'Black Mable',
+      name: 'Black Maple',
       type: 'Deciduous',
     });
   });
 
   it('should be able to get all trees', async () => {
-    await Tree.insert({ name: 'Black Mable', type: 'Deciduous' });
+    await Tree.insert({ name: 'Black Maple', type: 'Deciduous' });
     const res = await request(app).get('/api/v1/trees');
     expect(res.body).toEqual([
-      { id: expect.any(String), name: 'Black Mable', type: 'Deciduous' },
+      { id: expect.any(String), name: 'Black Maple', type: 'Deciduous' },
     ]);
   });
 
   it('should be able to get a tree by id', async () => {
-    const tree = await Tree.insert({ name: 'Black Mable', type: 'Deciduous' });
+    const tree = await Tree.insert({ name: 'Black Maple', type: 'Deciduous' });
     const res = await request(app).get(`/api/v1/trees/${tree.id}`);
     expect(res.body).toEqual({
       id: expect.any(String),
-      name: 'Black Mable',
+      name: 'Black Maple',
       type: 'Deciduous',
     });
     expect(res);
+  });
+
+  it('should be able to update a tree by id', async () => {
+    const tree = await Tree.insert({ name: 'Black Maple', type: 'Deciduous' });
+    const res = await request(app)
+      .patch(`/api/v1/trees/${tree.id}`)
+      .send({ name: 'Douglas Fir', type: 'Coniferous' });
+    const expected = {
+      id: expect.any(String),
+      name: 'Douglas Fir',
+      type: 'Coniferous',
+    };
+    expect(res.body).toEqual(expected);
+    expect(await Tree.getById(tree.id)).toEqual(expected);
   });
 });
