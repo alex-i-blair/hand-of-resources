@@ -127,4 +127,11 @@ describe('hand-of-resources routes', () => {
     expect(res.body).toEqual(expected);
     expect(await Tree.getById(tree.id)).toEqual(expected);
   });
+
+  it('should be able to delete a tree by id', async () => {
+    const tree = await Tree.insert({ name: 'Black Maple', type: 'Deciduous' });
+    const res = await request(app).delete(`/api/v1/trees/${tree.id}`);
+    expect(res.body).toEqual(tree);
+    expect(await Tree.getById(tree.id)).toBeNull();
+  });
 });
