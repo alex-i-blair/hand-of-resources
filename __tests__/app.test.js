@@ -249,7 +249,7 @@ describe('hand-of-resources routes', () => {
       `/api/v1/restaurants/${restaurant.id}`
     );
     expect(res.body).toEqual(restaurant);
-    // expect(await Restaurant.getById(restaurant.id)).toBeNull();
+    expect(await Restaurant.getById(restaurant.id)).toBeNull();
   });
   //=================================================================
   //Favorite Albums data tests
