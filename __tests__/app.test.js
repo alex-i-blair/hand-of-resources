@@ -206,4 +206,18 @@ describe('hand-of-resources routes', () => {
       { id: expect.any(String), name: 'Dame', cuisine: 'Italian', cost: '$$$' },
     ]);
   });
+  it('should be able to get a restaurant by id', async () => {
+    const restaurant = await Restaurant.insert({
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+    const res = await request(app).get(`/api/v1/restaurants/${restaurant.id}`);
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+  });
 });
