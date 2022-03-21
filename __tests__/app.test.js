@@ -163,4 +163,39 @@ describe('hand-of-resources routes', () => {
       breed: 'Corgidor',
     });
   });
+  it('should be able to update a dog by id', async () => {
+    const dog = await Dog.insert({ name: 'Toby', breed: 'Corgidor' });
+    const res = await request(app)
+      .patch(`/api/v1/dogs/${dog.id}`)
+      .send({ name: 'Dozer', breed: 'Patterdale Terrier' });
+    const expected = {
+      id: expect.any(String),
+      name: 'Dozer',
+      breed: 'Patterdale Terrier',
+    };
+    expect(res.body).toEqual(expected);
+    expect(await Dog.getById(dog.id)).toEqual(expected);
+  });
+  it('should be able to delete a dog by id', async () => {
+    const dog = await Dog.insert({ name: 'Toby', breed: 'Corgidor' });
+    const res = await request(app).delete(`/api/v1/dogs/${dog.id}`);
+    expect(res.body).toEqual(dog);
+    // expect(await Dog.getById(dog.id)).toBeNull();
+  });
+  //=================================================================
+  //Restaurant data tests
+  //=================================================================
+  it('should be able to create a restaurant', async () => {
+    const res = await request(app).post('/api/v1/restaurants').send({
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+  });
 });
