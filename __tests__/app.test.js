@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const Pizza = require('../lib/models/Pizza');
 const Tree = require('../lib/models/Tree');
 const Dog = require('../lib/models/Dog');
+const Restaurant = require('../lib/models/Restaurant');
 
 describe('hand-of-resources routes', () => {
   beforeEach(() => {
@@ -197,5 +198,12 @@ describe('hand-of-resources routes', () => {
       cuisine: 'Italian',
       cost: '$$$',
     });
+  });
+  it('should be able to get all restaurants', async () => {
+    await Restaurant.insert({ name: 'Dame', cuisine: 'Italian', cost: '$$$' });
+    const res = await request(app).get('/api/v1/restaurants');
+    expect(res.body).toEqual([
+      { id: expect.any(String), name: 'Dame', cuisine: 'Italian', cost: '$$$' },
+    ]);
   });
 });
