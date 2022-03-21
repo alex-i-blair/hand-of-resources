@@ -6,6 +6,7 @@ const Pizza = require('../lib/models/Pizza');
 const Tree = require('../lib/models/Tree');
 const Dog = require('../lib/models/Dog');
 const Restaurant = require('../lib/models/Restaurant');
+const Album = require('../lib/models/Album');
 
 describe('hand-of-resources routes', () => {
   beforeEach(() => {
@@ -219,5 +220,100 @@ describe('hand-of-resources routes', () => {
       cuisine: 'Italian',
       cost: '$$$',
     });
+  });
+  it('should be able to update a restaurant by id', async () => {
+    const restaurant = await Restaurant.insert({
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+    const res = await request(app)
+      .patch(`/api/v1/restaurants/${restaurant.id}`)
+      .send({ name: 'East Glisan', cuisine: 'Pizza', cost: '$$' });
+    const expected = {
+      id: expect.any(String),
+      name: 'East Glisan',
+      cuisine: 'Pizza',
+      cost: '$$',
+    };
+    expect(res.body).toEqual(expected);
+    expect(await Restaurant.getById(restaurant.id)).toEqual(expected);
+  });
+  it('should be able to delete by id', async () => {
+    const restaurant = await Restaurant.insert({
+      name: 'Dame',
+      cuisine: 'Italian',
+      cost: '$$$',
+    });
+    const res = await request(app).delete(
+      `/api/v1/restaurants/${restaurant.id}`
+    );
+    expect(res.body).toEqual(restaurant);
+    // expect(await Restaurant.getById(restaurant.id)).toBeNull();
+  });
+  //=================================================================
+  //Favorite Albums data tests
+  //=================================================================
+  it('should be able to create a favorite album', async () => {
+    const res = await request(app).post('/api/v1/albums').send({
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+  });
+  it('should be able to get all albums', async () => {
+    await Album.insert({
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+    const res = await request(app).get('/api/v1/albums');
+    expect(res.body).toEqual([
+      {
+        id: expect.any(String),
+        name: 'In the Airplane Over the Sea',
+        artist: 'Neutral Milk Hotel',
+      },
+    ]);
+  });
+  it('should be able to get album by id', async () => {
+    const album = await Album.insert({
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+    const res = await request(app).get(`/api/v1/albums/${album.id}`);
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+  });
+  it('should be able to update by id', async () => {
+    const album = await Album.insert({
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+    const res = await request(app)
+      .patch(`/api/v1/albums/${album.id}`)
+      .send({ name: 'Never Learn', artist: 'Lykke Li' });
+    const expected = {
+      id: expect.any(String),
+      name: 'Never Learn',
+      artist: 'Lykke Li',
+    };
+    expect(res.body).toEqual(expected);
+    expect(await Album.getById(album.id)).toEqual(expected);
+  });
+  it('should be able to delete album by id', async () => {
+    const album = await Album.insert({
+      name: 'In the Airplane Over the Sea',
+      artist: 'Neutral Milk Hotel',
+    });
+    const res = await request(app).delete(`/api/v1/albums/${album.id}`);
+    expect(res.body).toEqual(album);
+    expect(await Album.getById(album.id)).toBeNull();
   });
 });
